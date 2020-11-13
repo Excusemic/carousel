@@ -1,23 +1,24 @@
 import React, { useState, useEffect } from "react"
 import people from "./data"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faAngleLeft } from "@fortawesome/free-solid-svg-icons"
-import { faAngleRight } from "@fortawesome/free-solid-svg-icons"
+import { faAngleLeft, faAngleRight, faQuoteRight } from "@fortawesome/free-solid-svg-icons"
 
 const Slider = () => {
   const [value, setValue] = useState(0)
   let autoScroll
+  let timeOut
 
   useEffect(() => {
-    autoScroll = setInterval(() => {
-      handleValue("+")
-    }, 3000)
-    return () => {
-      clearInterval(autoScroll)
-    }
+    // autoScroll = setInterval(() => {
+    //   handleValue("+")
+    // }, 3000)
+    // return () => {
+    //   clearInterval(autoScroll)
+    // }
   }, [value])
 
   const handleValue = (e) => {
+    clearTimeout(timeOut)
     if (e === "+") {
       if (value < people.length - 1) {
         setValue(value + 1)
@@ -25,7 +26,7 @@ const Slider = () => {
         setValue(0)
       }
     } else if (e === "+/") {
-      setTimeout(() => {
+      timeOut = setTimeout(() => {
         if (value < people.length - 1) {
           setValue(value + 1)
         } else {
@@ -67,8 +68,8 @@ const Slider = () => {
     <div>
       <div
         className="slider"
-        onMouseOver={() => clearInterval(autoScroll)}
-        onMouseLeave={() => handleValue("+/")}
+        // onMouseOver={() => clearInterval(autoScroll)}
+        // onMouseLeave={() => handleValue("+/")}
       >
         <FontAwesomeIcon icon={faAngleLeft} className="prev-btn" onClick={() => handleValue("-")} />
         {people.map((elem, index) => {
@@ -81,9 +82,11 @@ const Slider = () => {
               <h3>{name}</h3>
               <h5>{title}</h5>
               <p>{quote}</p>
+              <FontAwesomeIcon icon={faQuoteRight} className="quote" />
             </div>
           )
         })}
+
         <FontAwesomeIcon
           icon={faAngleRight}
           className="next-btn"
