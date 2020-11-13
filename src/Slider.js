@@ -9,12 +9,12 @@ const Slider = () => {
   let timeOut
 
   useEffect(() => {
-    // autoScroll = setInterval(() => {
-    //   handleValue("+")
-    // }, 3000)
-    // return () => {
-    //   clearInterval(autoScroll)
-    // }
+    autoScroll = setInterval(() => {
+      handleValue("+")
+    }, 3000)
+    return () => {
+      clearInterval(autoScroll)
+    }
   }, [value])
 
   const handleValue = (e) => {
@@ -68,8 +68,8 @@ const Slider = () => {
     <div>
       <div
         className="slider"
-        // onMouseOver={() => clearInterval(autoScroll)}
-        // onMouseLeave={() => handleValue("+/")}
+        onMouseOver={() => clearInterval(autoScroll)}
+        onMouseLeave={() => handleValue("+/")}
       >
         <FontAwesomeIcon icon={faAngleLeft} className="prev-btn" onClick={() => handleValue("-")} />
         {people.map((elem, index) => {
