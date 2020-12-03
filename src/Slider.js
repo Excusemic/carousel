@@ -1,46 +1,47 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useRef, useCallback } from "react"
 import people from "./data"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faAngleLeft, faAngleRight, faQuoteRight } from "@fortawesome/free-solid-svg-icons"
 
 const Slider = () => {
   const [value, setValue] = useState(0)
-  let autoScroll
-  let timeOut
-
-  useEffect(() => {
-    autoScroll = setInterval(() => {
-      handleValue("+")
-    }, 3000)
-    return () => {
-      clearInterval(autoScroll)
-    }
-  }, [value])
-
-  const handleValue = (e) => {
-    clearTimeout(timeOut)
-    if (e === "+") {
-      if (value < people.length - 1) {
-        setValue(value + 1)
-      } else {
-        setValue(0)
-      }
-    } else if (e === "+/") {
-      timeOut = setTimeout(() => {
+  const autoScrollRef = useRef(null)
+  const timeOutRef = useRef(null)
+  const handleValue = useCallback(
+    (e) => {
+      clearTimeout(timeOutRef.current)
+      if (e === "+") {
         if (value < people.length - 1) {
           setValue(value + 1)
         } else {
           setValue(0)
         }
-      }, 1000)
-    } else {
-      if (value > 0) {
-        setValue(value - 1)
+      } else if (e === "+/") {
+        timeOutRef.current = setTimeout(() => {
+          if (value < people.length - 1) {
+            setValue(value + 1)
+          } else {
+            setValue(0)
+          }
+        }, 1000)
       } else {
-        setValue(people.length - 1)
+        if (value > 0) {
+          setValue(value - 1)
+        } else {
+          setValue(people.length - 1)
+        }
       }
+    },
+    [value]
+  )
+  useEffect(() => {
+    autoScrollRef.current = setInterval(() => {
+      handleValue("+")
+    }, 3000)
+    return () => {
+      clearInterval(autoScrollRef.current)
     }
-  }
+  }, [value, handleValue])
 
   const addClass = (index) => {
     if (index === people.length - 1 && value === 0) {
@@ -68,7 +69,7 @@ const Slider = () => {
     <div>
       <div
         className="slider"
-        onMouseOver={() => clearInterval(autoScroll)}
+        onMouseOver={() => clearInterval(autoScrollRef.current)}
         onMouseLeave={() => handleValue("+/")}
       >
         <FontAwesomeIcon icon={faAngleLeft} className="prev-btn" onClick={() => handleValue("-")} />
